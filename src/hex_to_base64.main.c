@@ -29,6 +29,8 @@ void hex_to_raw() {
       perror("");
       exit(errno);
     }
+    // if there's no more hexchars to read,
+    // close write end of pipe, and return
     if (read_chars == 0) {
       close(bytes_pipe[1]);
       return;
@@ -47,10 +49,10 @@ void hex_to_raw() {
 // transform them to base64
 // and send them to stdout
 void raw_to_base64() {
-  close(bytes_pipe[1]);
+  close(bytes_pipe[1]); // close unnused write end of pipe
   bytes_to_base64(bytes_pipe[0], 1);
-  close(bytes_pipe[0]);  
-  printf("\n");
+  close(bytes_pipe[0]); // we are done reading from pipe, so close read end
+  printf("\n"); // for the sake of pretty-printing
 }
 
 int main(int argc, char * argv[]) {
@@ -63,8 +65,8 @@ int main(int argc, char * argv[]) {
   } else if (pid == 0) {
     hex_to_raw();
   } else {
-    wait(NULL);
     raw_to_base64();
+    wait(NULL); // we are done processing, wait for children to exit
   }
   return 0;
 }
