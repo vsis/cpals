@@ -28,7 +28,6 @@ void hex_to_bytes(char * hexs, unsigned char * bytes, int max_bytes) {
   while (*current_hex != 0x00) {
     // check if max_bytes has been reached. if so, GTFO
     if (current_bytes >= max_bytes) {
-      fprintf(stderr, "hex_to_bytes(): max_bytes: %d has been reached\n", max_bytes);
       return;
     }
 
