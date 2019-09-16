@@ -6,7 +6,7 @@
 
 int test_single_hex_to_byte() {
   int errors = 0;
-  printf("running: test_single_hex_to_byte())\n");
+  printf("running: test_single_hex_to_byte()\n");
   if (single_hex_to_byte('A') != 0xA) errors++;
   if (single_hex_to_byte('a') != 0xA) errors++;
   if (single_hex_to_byte('B') != 0xB) errors++;
@@ -98,6 +98,7 @@ int test_byte_to_base64() {
   }
   return errors;
 }
+
 int test_three_bytes_to_base64() {
   int errors = 0;
   unsigned char test1[3] = {0x00, 0x00, 0x00};
@@ -162,7 +163,7 @@ int main (int argc, char * argv[]) {
   if (errors == 0) {
     printf("All tests OK\n");
   } else {
-    printf("Not all tests OK\n");
+    printf("Bruh, %d tests failed\n", errors);
   }
   return errors;
 }
