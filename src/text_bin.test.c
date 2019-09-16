@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "text_bin.h"
 
@@ -154,12 +155,67 @@ int test_three_bytes_to_base64() {
   return errors;
 }
 
+int test_bytes_to_base64() {
+  int raw_bytes[2], base64[2], errors = 0;
+  unsigned char test1[10] = {0x49, 0x27, 0x6d, 0x20, 0x6b, 0x69, 0x6c, 0x6c, 0x69, 0x6e};
+  unsigned char test2[6] = {0x67, 0x20, 0x79, 0x6f, 0x75, 0x72};
+  char result1[20] = {0}, result2[20] = {0};
+  printf("running: test_bytes_to_base64()\n");
+
+  // firt test
+  if ((pipe(raw_bytes) < 0) || (pipe(base64) < 0)) {
+    perror("");
+    return ++errors;
+  }
+  if (write(raw_bytes[1], test1, 10) < 0) {
+    perror("");
+    return ++errors;
+  }
+  close(raw_bytes[1]);
+  bytes_to_base64(raw_bytes[0], base64[1]);
+  close(base64[1]);
+  close(raw_bytes[0]);
+  if (read(base64[0], result1, 20) < 0) {
+    perror("");
+    return ++errors;
+  }
+  close(base64[0]);
+
+  // second test
+  if ((pipe(raw_bytes) < 0) || (pipe(base64) < 0)) {
+    perror("");
+    return ++errors;
+  }
+  if (write(raw_bytes[1], test2, 6) < 0) {
+    perror("");
+    return ++errors;
+  }
+  close(raw_bytes[1]);
+  bytes_to_base64(raw_bytes[0], base64[1]);
+  close(base64[1]);
+  close(raw_bytes[0]);
+  if (read(base64[0], result2, 20) < 0) {
+    perror("");
+    return ++errors;
+  }
+  close(base64[0]);
+
+  // check results
+  if (strcmp(result1, "SSdtIGtpbGxpbg==") != 0) errors++;
+  if (strcmp(result2, "ZyB5b3Vy") != 0 ) errors++;
+  if (errors != 0) {
+    fprintf(stderr, "test_bytes_to_base64() failed\n");
+  }
+  return errors;
+}
+
 int main (int argc, char * argv[]) {
   int errors = 0;
   errors += test_single_hex_to_byte();
   errors += test_hex_to_bytes();
   errors += test_byte_to_base64();
   errors += test_three_bytes_to_base64(); 
+  errors += test_bytes_to_base64();
   if (errors == 0) {
     printf("All tests OK\n");
   } else {

@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
+#include <unistd.h>
 
 #include "text_bin.h"
 
@@ -94,6 +96,32 @@ void three_bytes_to_base64(unsigned char * bytes, char * base64, unsigned char t
 }
 
 // transforms a bytes array to a base64 string
-char * bytes_to_base64(unsigned char * bytes) {
-  return 0x0;
+//  its parameters are: input file descriptor, with raw bytes,
+//  and output file descriptor, with base64 chars
+void bytes_to_base64(int infd, int outfd) {
+  int written_chars, read_chars, trailing_zeroes;
+  unsigned char raw_bytes[3];
+  char base64[5];
+  while (true) {
+    read_chars = read(infd, raw_bytes, 3);
+    if (read_chars < 0) {
+      perror("");
+      return;
+    }
+    trailing_zeroes = 3 - read_chars;
+    switch (trailing_zeroes) {
+      case 3:
+        return;
+      case 2:
+        raw_bytes[1] = 0x00;
+      case 1:
+        raw_bytes[2] = 0x00;
+    }
+    three_bytes_to_base64(raw_bytes, base64, trailing_zeroes);
+    written_chars = write(outfd, base64, 4);
+    if (written_chars < 0) {
+      perror("");
+      return;
+    }
+  }
 }

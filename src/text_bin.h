@@ -12,4 +12,6 @@ char byte_to_base64(unsigned char byte);
 void three_bytes_to_base64(unsigned char * bytes, char * base64, unsigned char trailing_zeroes );
 
 // transforms a bytes array to a base64 string
-char * bytes_to_base64(unsigned char * bytes);
+//  its parameters are: input file descriptor, with raw bytes,
+//  and output file descriptor, with base64 chars
+void bytes_to_base64(int infd, int outfd);
