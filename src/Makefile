@@ -25,4 +25,4 @@ set1_challenge2: lets_xor
 clean:
 	rm -rf *.o *.test $(BIN_TOOLS)
 
-.PHONY: clean set1_challenge1
+.PHONY: clean set1_challenge1 set1_challenge2

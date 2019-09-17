@@ -40,5 +40,6 @@ make text_bin.test
 ```
 cd src
 make set1_challenge1
+make set1_challenge2
 ```
 
