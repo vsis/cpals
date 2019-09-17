@@ -209,6 +209,44 @@ int test_bytes_to_base64() {
   return errors;
 }
 
+int test_hex_to_raw() {
+  int errors = 0;
+  char * test = "68656c6c6f20776f726c64";
+  unsigned char res[11];
+  int hex_pipe[2], raw_pipe[2];
+  printf("running: test_hex_to_raw()\n");
+  pipe(hex_pipe);
+  pipe(raw_pipe);
+  if (write(hex_pipe[1], test, 22) < 0) {
+    perror("");
+    return ++errors;
+  }
+  close(hex_pipe[1]);
+  hex_to_raw(hex_pipe[0], raw_pipe[1]);
+  close(hex_pipe[0]);
+  close(raw_pipe[1]);
+  if (read(raw_pipe[0], res, 11) < 0) {
+    perror("");
+    return ++errors;
+  }
+  close(raw_pipe[0]);
+  if (res[0] != 0x68) errors++;
+  if (res[1] != 0x65) errors++;
+  if (res[2] != 0x6c) errors++;
+  if (res[3] != 0x6c) errors++;
+  if (res[4] != 0x6f) errors++;
+  if (res[5] != 0x20) errors++;
+  if (res[6] != 0x77) errors++;
+  if (res[7] != 0x6f) errors++;
+  if (res[8] != 0x72) errors++;
+  if (res[9] != 0x6c) errors++;
+  if (res[10] != 0x64) errors++;
+  if (errors != 0) {
+    fprintf(stderr, "test_hex_to_raw() failed\n");
+  }
+  return errors;
+}
+
 int main (int argc, char * argv[]) {
   int errors = 0;
   errors += test_single_hex_to_byte();
@@ -216,6 +254,7 @@ int main (int argc, char * argv[]) {
   errors += test_byte_to_base64();
   errors += test_three_bytes_to_base64(); 
   errors += test_bytes_to_base64();
+  errors += test_hex_to_raw();
   if (errors == 0) {
     printf("All tests OK\n");
   } else {

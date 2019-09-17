@@ -15,3 +15,6 @@ void three_bytes_to_base64(unsigned char * bytes, char * base64, unsigned char t
 //  its parameters are: input file descriptor, with raw bytes,
 //  and output file descriptor, with base64 chars
 void bytes_to_base64(int infd, int outfd);
+
+// transforms hex chars, from input fd, to raw bytes, to output fd
+void hex_to_raw(int infd, int outfd);

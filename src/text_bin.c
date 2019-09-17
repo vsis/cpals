@@ -124,3 +124,32 @@ void bytes_to_base64(int infd, int outfd) {
     }
   }
 }
+
+// transforms hex chars, from input fd, to raw bytes, to output fd
+void hex_to_raw(int infd, int outfd) {
+  unsigned char byte = 0;
+  char buffer[2];
+  int read_chars = 0;
+  int written_bytes = 0;
+  while (true) {
+    read_chars = read(infd, buffer, 2);
+    if (read_chars < 0) {
+      perror("");
+      return;
+    }
+    switch (read_chars) {
+      case 0:
+      case 1:
+        return;
+      case 2:
+        byte = single_hex_to_byte(buffer[0]) << 4;
+        byte |= single_hex_to_byte(buffer[1]);
+    }
+    written_bytes = write(outfd, &byte, 1);
+    if (written_bytes < 0) {
+      perror("");
+      return;
+    }
+  }
+}
+

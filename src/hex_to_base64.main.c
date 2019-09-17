@@ -8,7 +8,6 @@
 
 #include "text_bin.h"
 
-#define HTB64_BUFFER_SIZE 512
 
 // a pipe to store raw bytes
 int bytes_pipe[2] = {0};
@@ -16,33 +15,10 @@ int bytes_pipe[2] = {0};
 // read hex chars from stdin
 // transform them to raw bytes
 // and send those bytes to a pipe
-void hex_to_raw() {
-  char buffer[HTB64_BUFFER_SIZE] = {0};
-  unsigned char bytes[HTB64_BUFFER_SIZE] = {0};
-  int read_chars = 0;
-  int written_bytes = 0;
-  int half_buffer = 0;
-  close(bytes_pipe[0]); //close unnused read end
-  while (true) {
-    read_chars = read(0, buffer, HTB64_BUFFER_SIZE);
-    if (read_chars < 0) {
-      perror("");
-      exit(errno);
-    }
-    // if there's no more hexchars to read,
-    // close write end of pipe, and return
-    if (read_chars == 0) {
-      close(bytes_pipe[1]);
-      return;
-    }
-    half_buffer = read_chars / 2; // number of raw bytes are the half of hex chars
-    hex_to_bytes(buffer, bytes, half_buffer);
-    written_bytes = write (bytes_pipe[1], bytes, half_buffer);
-    if (written_bytes < 0) {
-      perror("");
-      exit(errno);
-    }
-  }
+void stdin_hex_to_raw() {
+  close(bytes_pipe[0]); // close unnused read end of pipe
+  hex_to_raw(0, bytes_pipe[1]);
+  close(bytes_pipe[1]); // we are done writing to bytes pipe
 }
 
 // read raw bytes from pipe
@@ -63,7 +39,7 @@ int main(int argc, char * argv[]) {
     perror("");
     exit(errno);
   } else if (pid == 0) {
-    hex_to_raw();
+    stdin_hex_to_raw();
   } else {
     raw_to_base64();
     wait(NULL); // we are done processing, wait for children to exit
