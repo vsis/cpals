@@ -18,3 +18,12 @@ void bytes_to_base64(int infd, int outfd);
 
 // transforms hex chars, from input fd, to raw bytes, to output fd
 void hex_to_raw(int infd, int outfd);
+
+// transforms a byte into an hex char
+char byte_to_single_char(unsigned char byte);
+
+// transforms a byte into two hex chars
+void byte_to_hex(unsigned char byte, char hex[]);
+
+// transforms raw bytes form intput fd to hex chars to output fd
+void raw_to_hex(int infd, int outfd);

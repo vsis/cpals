@@ -153,3 +153,45 @@ void hex_to_raw(int infd, int outfd) {
   }
 }
 
+// transforms a byte into an hex char
+char byte_to_single_char(unsigned char byte) {
+  if (byte < 10) {
+    return byte + '0';
+  } else if (byte < 16) {
+    return byte + 'A' - 10;
+  } else {
+    fprintf(stderr, "byte_to_single_char(): byte '%d' is too damn high\n", byte);
+    return 0x00;
+  }
+}
+
+// transforms a byte into two hex chars
+void byte_to_hex(unsigned char byte, char hex[]) {
+  unsigned char upper = (0xF0 & byte) >> 4 ;
+  unsigned char lower = 0x0F & byte;
+  hex[0] = byte_to_single_char(upper);
+  hex[1] = byte_to_single_char(lower);
+}
+
+// transforms raw bytes form intput fd to hex chars to output fd
+void raw_to_hex(int infd, int outfd) {
+  unsigned char byte = 0;
+  char hex[2] = {0};
+  int read_bytes = 0;
+  int written_chars = 0;
+  while (true) {
+    read_bytes = read(infd, &byte, 1);
+    if (read_bytes < 0) {
+      perror("");
+      return;
+    } else if (read_bytes == 0) {
+      return;
+    }
+    byte_to_hex(byte, hex);
+    written_chars = write(outfd, hex, 2);
+    if (written_chars < 0) {
+      perror("");
+      return;
+    }
+  }
+}

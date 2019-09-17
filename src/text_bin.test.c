@@ -247,6 +247,97 @@ int test_hex_to_raw() {
   return errors;
 }
 
+int test_byte_to_single_char() {
+  int errors = 0;
+  printf ("running: test_byte_to_single_char()\n");
+  if (byte_to_single_char(0x00) != '0') errors++;
+  if (byte_to_single_char(0x01) != '1') errors++;
+  if (byte_to_single_char(0x02) != '2') errors++;
+  if (byte_to_single_char(0x03) != '3') errors++;
+  if (byte_to_single_char(0x04) != '4') errors++;
+  if (byte_to_single_char(0x05) != '5') errors++;
+  if (byte_to_single_char(0x06) != '6') errors++;
+  if (byte_to_single_char(0x07) != '7') errors++;
+  if (byte_to_single_char(0x08) != '8') errors++;
+  if (byte_to_single_char(0x09) != '9') errors++;
+  if (byte_to_single_char(0x0a) != 'A') errors++;
+  if (byte_to_single_char(0x0b) != 'B') errors++;
+  if (byte_to_single_char(0x0c) != 'C') errors++;
+  if (byte_to_single_char(0x0d) != 'D') errors++;
+  if (byte_to_single_char(0x0e) != 'E') errors++;
+  if (byte_to_single_char(0x0f) != 'F') errors++;
+  if (byte_to_single_char(0x10) != 0x00) errors++;
+  if (errors != 0) {
+    fprintf(stderr, "test_byte_to_single_char() failed\n");
+  }
+  return errors;
+}
+
+int test_byte_to_hex() {
+  int errors = 0;
+  unsigned char test1 = 0x00;
+  unsigned char test2 = 0x01;
+  unsigned char test3 = 0x0F;
+  unsigned char test4 = 0x23;
+  unsigned char test5 = 0x45;
+  unsigned char test6 = 0xFF;
+  char res1[3] = {0};
+  char res2[3] = {0};
+  char res3[3] = {0};
+  char res4[3] = {0};
+  char res5[3] = {0};
+  char res6[3] = {0};
+  printf ("running: test_byte_to_hex()\n");
+  byte_to_hex(test1, res1);
+  byte_to_hex(test2, res2);
+  byte_to_hex(test3, res3);
+  byte_to_hex(test4, res4);
+  byte_to_hex(test5, res5);
+  byte_to_hex(test6, res6);
+  if (strcmp(res1, "00") != 0) errors++;
+  if (strcmp(res2, "01") != 0) errors++;
+  if (strcmp(res3, "0F") != 0) errors++;
+  if (strcmp(res4, "23") != 0) errors++;
+  if (strcmp(res5, "45") != 0) errors++;
+  if (strcmp(res6, "FF") != 0) errors++;
+  if (errors != 0) {
+    fprintf(stderr, "test_byte_to_single_char() failed\n");
+  }
+  return errors;
+}
+
+int test_raw_to_hex() {
+  int errors = 0;
+  int raw_pipe[2], hex_pipe[2];
+  int written_bytes = 0;
+  int read_hex = 0;
+  char hex[23] = {0};
+  unsigned char test[11] = {0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x77, 0x6f, 0x72, 0x6c, 0x64};
+  printf ("running: test_raw_to_hex()\n");
+  pipe(raw_pipe);
+  pipe(hex_pipe);
+  written_bytes = write(raw_pipe[1], test, 11);
+  if (written_bytes < 0) {
+    perror("");
+    return ++errors;
+  }
+  close(raw_pipe[1]);
+  raw_to_hex(raw_pipe[0], hex_pipe[1]);
+  close(hex_pipe[1]);
+  close(raw_pipe[0]);
+  read_hex = read(hex_pipe[0], hex, 22);
+  if (read_hex < 0) {
+    perror("");
+    return ++errors;
+  }
+  close(hex_pipe[0]);
+  if (strcmp(hex, "68656C6C6F20776F726C64") != 0) errors++;
+  if (errors != 0) {
+    fprintf(stderr, "test_raw_to_hex() failed\n");
+  }
+  return errors;
+}
+
 int main (int argc, char * argv[]) {
   int errors = 0;
   errors += test_single_hex_to_byte();
@@ -255,6 +346,9 @@ int main (int argc, char * argv[]) {
   errors += test_three_bytes_to_base64(); 
   errors += test_bytes_to_base64();
   errors += test_hex_to_raw();
+  errors += test_byte_to_single_char();
+  errors += test_byte_to_hex();
+  errors += test_raw_to_hex();
   if (errors == 0) {
     printf("All tests OK\n");
   } else {
