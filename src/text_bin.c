@@ -5,6 +5,28 @@
 
 #include "text_bin.h"
 
+// blocks until we can read all requested data
+int block_read(int fd, char * buffer, int buffer_size) {
+  int current_read = 0;
+  int total_read = 0;
+  int total_left = buffer_size;
+  char * buffer_ptr;
+  buffer_ptr = buffer;
+  while (total_left > 0) {
+    current_read = read(fd, buffer_ptr, total_left);
+    if (current_read > 0) { // if we read something, move counters and pointer
+      total_read += current_read;
+      total_left -= current_read;
+      buffer_ptr += current_read;
+    } else if (current_read == 0) { // nothing more to read
+      break;
+    } else { // there was an error, so return the error code.
+      return current_read;
+    }
+  }
+  return total_read;
+}
+
 // transforms one hexadecimal char to a byte
 unsigned char single_hex_to_byte(char a) {
   if ((a <= '9') && (a >= '0')) {
@@ -102,7 +124,7 @@ void bytes_to_base64(int infd, int outfd) {
   unsigned char raw_bytes[3];
   char base64[5];
   while (true) {
-    read_chars = read(infd, raw_bytes, 3);
+    read_chars = block_read(infd, raw_bytes, 3);
     if (read_chars < 0) {
       perror("");
       return;
@@ -132,7 +154,7 @@ void hex_to_raw(int infd, int outfd) {
   int read_chars = 0;
   int written_bytes = 0;
   while (true) {
-    read_chars = read(infd, buffer, 2);
+    read_chars = block_read(infd, buffer, 2);
     if (read_chars < 0) {
       perror("");
       return;

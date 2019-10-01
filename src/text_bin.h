@@ -1,3 +1,6 @@
+// blocks until we can read all requested data
+int block_read(int fd, char * buffer, int buffer_size);
+
 // transforms one hexadecimal char to a byte
 unsigned char single_hex_to_byte(char a);
 
