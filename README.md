@@ -33,6 +33,7 @@ This is a list of static libs and their tests:
 ```
 cd src
 make text_bin.test
+make text_score.test
 ```
 
 ## Completed challenges
@@ -41,5 +42,6 @@ make text_bin.test
 cd src
 make set1_challenge1
 make set1_challenge2
+make set1_challenge3
 ```
 
