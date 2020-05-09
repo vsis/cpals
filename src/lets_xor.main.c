@@ -16,18 +16,18 @@ int hex1[2], hex2[2];
 int lx_out[2];
 
 void xor_queues(int fd1, int fd2, int outfd) {
-  int read_bytes = 0;
-  int written_bytes = 0;
+  ssize_t read_bytes = 0;
+  ssize_t written_bytes = 0;
   unsigned char byte1, byte2, output;
   while (true) {
-    read_bytes = read(fd1, &byte1, 1);
+    read_bytes = read(fd1, &byte1, (size_t) 1);
     if (read_bytes < 0) {
       perror("");
       exit(errno);
     } else if (read_bytes == 0) {
       return;
     }
-    read_bytes = read(fd2, &byte2, 1);
+    read_bytes = read(fd2, &byte2, (size_t) 1);
     if (read_bytes < 0) {
       perror("");
       exit(errno);
@@ -43,8 +43,8 @@ void xor_queues(int fd1, int fd2, int outfd) {
   }
 }
 
-void arg_into_queue(char arg[], int arg_size, int fd) {
-  int written_chars = 0;
+void arg_into_queue(char arg[], size_t arg_size, int fd) {
+  ssize_t written_chars = 0;
   written_chars = write(fd, arg, arg_size);
   if (written_chars < 0) {
     perror("");

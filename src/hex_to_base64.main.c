@@ -10,7 +10,7 @@
 
 
 // a pipe to store raw bytes
-int bytes_pipe[2] = {0};
+int bytes_pipe[2] = {0, 0};
 
 // read hex chars from stdin
 // transform them to raw bytes
@@ -42,7 +42,7 @@ int main(int argc, char * argv[]) {
     stdin_hex_to_raw();
   } else {
     raw_to_base64();
-    wait(NULL); // we are done processing, wait for children to exit
+    (void) wait(NULL); // we are done processing, wait for children to exit
   }
   return 0;
 }
