@@ -106,7 +106,7 @@ int test_char_freq_score() {
   char_freq(text1, freqs1);
   char_freq(text2, freqs2);
   if (char_freq_score(freqs1) != 0) errors++;
-  if (char_freq_score(freqs2) != 3) errors++;
+  if (char_freq_score(freqs2) != 1) errors++;
   if (errors != 0) {
     fprintf(stderr, "test_char_freq_score() failed\n");
   }

@@ -30,10 +30,10 @@ _Bool is_str_ascii(char *strin) {
 
 // Return an array of char frequency
 void char_freq(char *strin, int *freqs) {
-  char * current_char;
+  unsigned char * current_char;
   if (strin != NULL) {
-    current_char = strin;
-    while (*current_char != '\0') {
+    current_char = (unsigned char *) strin;
+    while (*current_char != (unsigned char) '\0') {
       freqs[(int) *current_char]++;
       current_char++;
     }
@@ -42,16 +42,6 @@ void char_freq(char *strin, int *freqs) {
 
 // Return a score based of char frequency
 int char_freq_score(int *freqs) {
-  int max_freq = 0, min_freq = 0;
-  int index;
-  for (index = 0; index < 256; index++) {
-    if (max_freq < freqs[index]) {
-      max_freq = freqs[index];
-    }
-    if (min_freq > freqs[index]) {
-      min_freq = freqs[index];
-    }
-  }
-  return max_freq - min_freq;
+  return freqs[32]; // for now, just frequencies of spaces
 }
 
