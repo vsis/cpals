@@ -1,5 +1,5 @@
 CC=gcc
-BIN_TOOLS:= hex_to_base64 lets_xor
+BIN_TOOLS:= hex_to_base64 lets_xor single_byte_cracker
 
 .SECONDARY:
 
@@ -21,6 +21,13 @@ lets_xor: text_bin.o lets_xor.main.c
 
 set1_challenge2: lets_xor
 	./lets_xor "1c0111001f010100061a024b53535009181c" "686974207468652062756c6c277320657965"
+
+# set 1 - challenge 3
+single_byte_cracker: text_bin.o text_score.o single_byte_cracker.main.c
+	$(CC) $(CFLAGS) text_bin.o text_score.o single_byte_cracker.main.c -o $@
+
+set1_challenge3: single_byte_cracker
+	./single_byte_cracker "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
 
 clean:
 	rm -rf *.o *.test $(BIN_TOOLS)
