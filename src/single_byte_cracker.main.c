@@ -57,9 +57,11 @@ int main (int argc, char *argv[]) {
     }
   }
 
-  // Check if best score is also made of ascii chars
-  if (! asciis[best_index]) {
-    printf("Best score is not ASCII !!!\n");
+  // Check if best score is not 0x00 (no cipher)
+  // or not all chars are printable
+  if ((best_score == 0) || (! asciis[best_index])) {
+    printf("Fail =(\n");
+    exit(1);
   }
 
   // Print best score result
@@ -67,12 +69,5 @@ int main (int argc, char *argv[]) {
   printf("Selected key: %d\n", best_index);
   printf("Selected score: %d\n", best_score);
   printf("Plain text: %s\n", plain_text);
-  
-
-  // End with error if selected result is not ASCII
-  if (asciis[best_index]) {
-    return 0; // End with success if it is ASCII
-  } else {
-    return 1;
-  }
+  exit(0);
 }

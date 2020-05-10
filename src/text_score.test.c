@@ -12,7 +12,6 @@ int test_non_ascii_chars() {
   if (is_ascii(127)) errors++;
   if (is_ascii(1)) errors++;
   if (is_ascii(31)) errors++;
-  if (is_ascii(10)) errors++;
   if (is_ascii(128)) errors++;
   if (is_ascii(192)) errors++;
   if (is_ascii(255)) errors++;
@@ -30,6 +29,7 @@ int test_ascii_chars() {
   if (! is_ascii('A')) errors++;
   if (! is_ascii('a')) errors++;
   if (! is_ascii('}')) errors++;
+  if (! is_ascii('\n')) errors++;
   if (errors != 0) {
     fprintf(stderr, "test_ascii_chars() failed\n");
   }
@@ -106,7 +106,7 @@ int test_char_freq_score() {
   char_freq(text1, freqs1);
   char_freq(text2, freqs2);
   if (char_freq_score(freqs1) != 0) errors++;
-  if (char_freq_score(freqs2) != 1) errors++;
+  if (char_freq_score(freqs2) != 77) errors++;
   if (errors != 0) {
     fprintf(stderr, "test_char_freq_score() failed\n");
   }

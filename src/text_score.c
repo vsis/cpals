@@ -8,7 +8,7 @@
 
 // Check if a character is ASCII and printable
 _Bool is_ascii(char chrin) {
-  return ((chrin > (char)31) && (chrin < (char)127));
+  return (((chrin > (char)31) && (chrin < (char)127)) || (chrin == '\n'));
 }
 
 // Check if a string is made only of ASCII chars
@@ -42,6 +42,22 @@ void char_freq(char *strin, int *freqs) {
 
 // Return a score based of char frequency
 int char_freq_score(int *freqs) {
-  return freqs[32]; // for now, just frequencies of spaces
+  // We will use the most common letters in english, with a given factor
+  // acording its expected frequency.
+  // We also give a relativy high factor to space char
+  int score = 0;
+  score += 20 * freqs[(int) ' '];
+  score += 13 * (freqs[(int) 'e'] + freqs[(int) 'E']);
+  score += 10 * (freqs[(int) 't'] + freqs[(int) 'T']);
+  score += 9 * (freqs[(int) 'a'] + freqs[(int) 'A']);
+  score += 8 * (freqs[(int) 'o'] + freqs[(int) 'O']);
+  score += 7 * (freqs[(int) 'i'] + freqs[(int) 'I']);
+  score += 7 * (freqs[(int) 'n'] + freqs[(int) 'N']);
+  score += 6 * (freqs[(int) 's'] + freqs[(int) 'S']);
+  score += 6 * (freqs[(int) 'h'] + freqs[(int) 'H']);
+  score += 6 * (freqs[(int) 'r'] + freqs[(int) 'R']);
+  score += 4 * (freqs[(int) 'd'] + freqs[(int) 'D']);
+  score += 4 * (freqs[(int) 'l'] + freqs[(int) 'L']);
+  return score;
 }
 
