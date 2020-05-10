@@ -43,5 +43,6 @@ cd src
 make set1_challenge1
 make set1_challenge2
 make set1_challenge3
+make set1_challenge4
 ```
 
