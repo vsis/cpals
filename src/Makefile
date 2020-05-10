@@ -29,6 +29,9 @@ single_byte_cracker: text_bin.o text_score.o single_byte_cracker.main.c
 set1_challenge3: single_byte_cracker
 	./single_byte_cracker "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
 
+set1_challenge4: single_byte_cracker
+	./search_single_byte_cipher.sh input/4.txt
+
 clean:
 	rm -rf *.o *.test $(BIN_TOOLS)
 
